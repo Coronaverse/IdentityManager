@@ -1,0 +1,15 @@
+name: CRP/IdentityManager
+version: 1.0.0
+description: NFive Plugin
+author: CRP
+license: LGPL-3.0-or-later
+server:
+  main:
+    - CRP.IdentityManager.Server
+  include:
+    - CRP.IdentityManager.Shared
+client:
+  main:
+    - CRP.IdentityManager.Client
+  include:
+    - CRP.IdentityManager.Shared
