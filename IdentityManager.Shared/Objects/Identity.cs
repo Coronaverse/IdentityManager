@@ -1,14 +1,25 @@
 using System;
-using NFive.SDK.Core.Controllers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using CRP.IdentityManager.Shared.Definitions;
-
+using NFive.SDK.Core.Utilities;
 
 namespace CRP.IdentityManager.Shared
 {
-	public class Identity : ControllerConfiguration
+	public interface IIdentity
 	{
-		public string Example { get; set; } = "Hello World";
+		Guid UserId { get; set; }
+		List<CharacterData> Characters { get; set; }
+		Privileges.AuthorityLevel AuthorityLevel { get; set; }
+		Privileges.PoliceLevel PoliceRank { get; set; }
+		Privileges.EMSLevel EMSRank { get; set; }
+		Privileges.AccessLevel AccessLevel { get; set; }
+		CharacterData Character { get; }
+	}
+
+	public class Identity : IIdentity
+	{
+		//public string Example { get; set; } = "Hello World";
 
 		public Guid UserId { get; set; }
 		public List<CharacterData> Characters { get; set; } = new List<CharacterData>();

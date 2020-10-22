@@ -12,9 +12,9 @@ using System.Linq;
 namespace CRP.IdentityManager.Server
 {
 	[PublicAPI]
-	public class IdentityManagerController : ConfigurableController<Identity>
+	public class IdentityManagerController : Controller
 	{
-		public IdentityManagerController(ILogger logger, Identity identity, ICommunicationManager comms) : base(logger, identity)
+		public IdentityManagerController(ILogger logger, ICommunicationManager comms) : base(logger)
 		{
 			comms.Event(IdentityManagerEvents.Identity).FromClients().OnRequest(e => e.Reply(GetIdentity(e)));
 		}
@@ -35,7 +35,7 @@ namespace CRP.IdentityManager.Server
 				}
 				catch (Exception ex)
 				{
-					this.Logger.Debug($"MySql Error: {ex.Message}"); // Likely thrown by a dupiclate value... logging just in case
+					this.Logger.Debug($"MySql Error 1: {ex.Message}"); // Likely thrown by a dupiclate value... logging just in case
 				}
 
 				try
@@ -44,7 +44,7 @@ namespace CRP.IdentityManager.Server
 				}
 				catch (Exception ex)
 				{
-					this.Logger.Debug($"MySql Error: {ex.Message}");
+					this.Logger.Debug($"MySql Error 2: {ex.Message}");
 				}
 			}
 
