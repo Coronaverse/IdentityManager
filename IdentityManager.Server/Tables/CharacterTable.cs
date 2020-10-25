@@ -4,7 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRP.IdentityManager.Server.Tables
 {
-	public class Character
+	[Table("Character")]
+	public class CharacterTable
 	{
 		[Required]
 		public Guid UserId { get; set; }
@@ -23,11 +24,15 @@ namespace CRP.IdentityManager.Server.Tables
 		public string LastName { get; set; }
 
 		[Required]
-		public int Age { get; set; }
+		public string DateOfBirth { get; set; }
+
+		[Required]
+		[StringLength(60)]
+		public string Gender { get; set; }
 
 		#region Methods
 
-		public Character()
+		public CharacterTable()
 		{
 			this.UserId = Guid.NewGuid();
 			this.GenerateId();

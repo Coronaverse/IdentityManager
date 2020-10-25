@@ -8,7 +8,6 @@ namespace CRP.IdentityManager.Server.Storage
 	public class StorageContext : EFContext<StorageContext>
 	{
 		public DbSet<User> Users { get; set; }
-		public DbSet<UserPrivilege> UserPrivileges { get; set; }
-		public DbSet<Character> Characters { get; set; }
+		public DbSet<CharacterTable> Characters { get; set; }
 	}
 }

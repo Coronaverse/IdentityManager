@@ -8,6 +8,7 @@ using CRP.IdentityManager.Server.Tables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NFive.SDK.Core.Models.Player;
 
 namespace CRP.IdentityManager.Server
 {
@@ -16,42 +17,55 @@ namespace CRP.IdentityManager.Server
 	{
 		public IdentityManagerController(ILogger logger, ICommunicationManager comms) : base(logger)
 		{
-			comms.Event(IdentityManagerEvents.Identity).FromClients().OnRequest(e => e.Reply(GetIdentity(e)));
+			comms.Event(IdentityManagerEvents.IdentityGetCharacters).FromClients().OnRequest(e =>
+			{
+				e.Reply((GetCharacters(e.User)));
+			});
+
+			comms.Event(IdentityManagerEvents.IdentityCreateCharacter).FromClients().OnRequest<Character>((e, CharData) =>
+			{
+				e.Reply(CreateCharacter(CharData));
+			});
 		}
 
-		public Identity GetIdentity(ICommunicationMessage e)
+		public Character CreateCharacter(Character data)
 		{
-			UserPrivilege up = null;
-			List<Character> Characters = new List<Character>();
-
 			using (var context = new StorageContext())
 			{
-				up = new UserPrivilege(context, e.User.License);
-
 				try
 				{
-					context.UserPrivileges.Add(up);
+					CharacterTable newChar = new CharacterTable();
+					newChar.FirstName = data.FirstName;
+					newChar.LastName = data.LastName;
+					newChar.DateOfBirth = data.DateOfBirth;
+					newChar.Gender = data.Gender;
+					context.Characters.Add(newChar);
 					context.SaveChanges();
+					return MapTo.Character(newChar);
 				}
 				catch (Exception ex)
 				{
-					this.Logger.Debug($"MySql Error 1: {ex.Message}"); // Likely thrown by a dupiclate value... logging just in case
-				}
-
-				try
-				{
-					Characters = context.Characters.Where(a => a.UserId == up.UserId).ToList();
-				}
-				catch (Exception ex)
-				{
-					this.Logger.Debug($"MySql Error 2: {ex.Message}");
+					this.Logger.Debug($"Character creation failed: {ex.Message}");
 				}
 			}
+			return null;
 
-			List<Shared.CharacterData> CharactersData = MapTo.CharacterData(Characters);
-			Identity id = MapTo.Identity(up, CharactersData);
+		}
 
-			return id;
+		public List<Character> GetCharacters(User user)
+		{
+			List<CharacterTable> Characters = new List<CharacterTable>();
+			using (var context = new StorageContext())
+			{
+				try
+				{
+					Characters = context.Characters.Where(a => a.UserId == user.Id).ToList();
+				} catch (Exception ex)
+				{
+					this.Logger.Debug($"MySQL Error: {ex.Message}");
+				}
+			}
+			return Characters.Select(x => MapTo.Character(x)).ToList();
 		}
 	}
 }

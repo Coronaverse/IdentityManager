@@ -54,9 +54,7 @@
   <ItemGroup>
     <Compile Include="Definitions\PedComponent.cs" />
     <Compile Include="Definitions\PedSkin.cs" />
-    <Compile Include="Definitions\Privileges.cs" />
-    <Compile Include="Objects\CharacterData.cs" />
-    <Compile Include="Objects\Identity.cs" />
+    <Compile Include="Objects\Character.cs" />
     <Compile Include="IdentityManagerEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

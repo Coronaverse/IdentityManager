@@ -6,18 +6,19 @@ namespace CRP.IdentityManager.Server
 {
 	public static class MapTo
 	{
-		public static List<Shared.CharacterData> CharacterData(List<Character> Characters)
+		public static List<Shared.Character> CharacterData(List<CharacterTable> Characters)
 		{
-			List<Shared.CharacterData> CharactersData = new List<Shared.CharacterData>();
+			List<Shared.Character> CharactersData = new List<Shared.Character>();
 
-			foreach (Character Character in Characters)
+			foreach (CharacterTable Character in Characters)
 			{
-				Shared.CharacterData CharacterData = new Shared.CharacterData();
+				Shared.Character CharacterData = new Shared.Character();
 
 				CharacterData.CharacterId = Character.CharacterId;
 				CharacterData.FirstName = Character.FirstName;
 				CharacterData.LastName = Character.LastName;
-				CharacterData.Age = Character.Age;
+				CharacterData.DateOfBirth = Character.DateOfBirth;
+				CharacterData.Gender = Character.Gender;
 
 				CharactersData.Add(CharacterData);
 			}
@@ -25,18 +26,16 @@ namespace CRP.IdentityManager.Server
 			return CharactersData;
 		}
 
-		public static Identity Identity(UserPrivilege up, List<CharacterData> cd)
+		public static Character Character(CharacterTable data)
 		{
-			Identity id = new Identity();
-
-			id.UserId = up.UserId;
-			id.AuthorityLevel = up.AuthorityLevel;
-			id.PoliceRank = up.PoliceRank;
-			id.EMSRank = up.EMSRank;
-			id.AccessLevel = up.AccessLevel;
-			id.Characters = cd;
-
-			return id;
+			return new Character()
+			{
+				CharacterId = data.CharacterId,
+				FirstName = data.FirstName,
+				LastName = data.LastName,
+				DateOfBirth = data.DateOfBirth,
+				Gender = data.Gender
+			};
 		}
 	}
 }
