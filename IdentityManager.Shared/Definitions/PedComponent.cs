@@ -1,4 +1,4 @@
-namespace CRP.IdentityManager.Shared.Definitions
+namespace Coronaverse.IdentityManager.Shared.Definitions
 {
 	public class PedComponent
 	{

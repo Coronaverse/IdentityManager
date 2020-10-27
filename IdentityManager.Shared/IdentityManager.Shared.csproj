@@ -7,8 +7,8 @@
     <ProjectGuid>{DB931A06-BEAF-459B-8E5F-53661319A847}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CRP.IdentityManager.Shared</RootNamespace>
-    <AssemblyName>CRP.IdentityManager.Shared.net</AssemblyName>
+    <RootNamespace>Coronaverse.IdentityManager.Shared</RootNamespace>
+    <AssemblyName>Coronaverse.IdentityManager.Shared.net</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

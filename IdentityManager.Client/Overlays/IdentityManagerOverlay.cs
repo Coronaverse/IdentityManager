@@ -1,4 +1,8 @@
-using CRP.IdentityManager.Shared;
+using CitizenFX.Core;
+using CitizenFX.Core.Native;
+using CitizenFX.Core.UI;
+using Coronaverse.IdentityManager.Shared;
+using NFive.SDK.Client.Extensions;
 using NFive.SDK.Client.Interface;
 using System;
 using System.Collections.Generic;
@@ -6,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CRP.IdentityManager.Client.Overlays
+namespace Coronaverse.IdentityManager.Client.Overlays
 {
 	class IdentityManagerOverlay : Overlay
 	{
@@ -16,7 +20,7 @@ namespace CRP.IdentityManager.Client.Overlays
 		public IdentityManagerOverlay(IOverlayManager manager) : base(manager, "login.html")
 		{
 			On("create", new Action<Character>(charData => this.CharacterCreate?.Invoke(this, new CharacterCreationEventArgs(this, charData))));
-			On("login", new Action<int>(charId => this.CharacterLogin?.Invoke(this, new CharacterLoginEventArgs(this, charId))));
+			On("login", new Action<Character>(charData => this.CharacterLogin?.Invoke(this, new CharacterLoginEventArgs(this, charData))));
 		}
 
 		public void SendCharacters(List<Character> characters)
@@ -48,11 +52,11 @@ namespace CRP.IdentityManager.Client.Overlays
 
 	public class CharacterLoginEventArgs : OverlayEventArgs
 	{
-		public int CharacterID;
+		public Character Character;
 
-		public CharacterLoginEventArgs(Overlay overlay, int characterId) : base(overlay)
+		public CharacterLoginEventArgs(Overlay overlay, Character Character) : base(overlay)
 		{
-			CharacterID = characterId;
+			this.Character = Character;
 		}
 	}
 

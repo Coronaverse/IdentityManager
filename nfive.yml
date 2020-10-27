@@ -1,15 +1,21 @@
-name: CRP/IdentityManager
+name: Coronaverse/IdentityManager
 version: 1.0.0
 description: NFive Plugin
-author: CRP
+author: Coronaverse
 license: LGPL-3.0-or-later
 server:
   main:
-    - CRP.IdentityManager.Server
+    - Coronaverse.IdentityManager.Server
   include:
-    - CRP.IdentityManager.Shared
+    - Coronaverse.IdentityManager.Shared
 client:
   main:
-    - CRP.IdentityManager.Client
+    - Coronaverse.IdentityManager.Client
   include:
-    - CRP.IdentityManager.Shared
+    - Coronaverse.IdentityManager.Shared
+  files:
+    - Overlays/login.html
+    - Overlays/css/main.css
+    - Overlays/css/login.css
+    - Overlays/js/login.js
+    - Overlays/img/fs-background.jpeg

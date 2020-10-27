@@ -7,8 +7,8 @@
     <ProjectGuid>{B1578115-8DD7-40FE-8434-55F6F81A3BB4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CRP.IdentityManager.Client</RootNamespace>
-    <AssemblyName>CRP.IdentityManager.Client.net</AssemblyName>
+    <RootNamespace>Coronaverse.IdentityManager.Client</RootNamespace>
+    <AssemblyName>Coronaverse.IdentityManager.Client.net</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AllowedReferenceRelatedFileExtensions>
@@ -37,9 +37,6 @@
     <Reference Include="CitizenFX.Core.Client, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CitizenFX.Core.Client.1.0.1688\lib\net45\CitizenFX.Core.Client.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="Coronaverse.Notifications.Shared.net">
-      <HintPath>..\..\Notifications\Coronaverse.Notifications.Shared.net.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Annotations, Version=2019.1.3.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.2019.1.3\lib\net20\JetBrains.Annotations.dll</HintPath>
@@ -78,6 +75,23 @@
       <Name>IdentityManager.Shared</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Overlays\css\login.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Overlays\css\main.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Overlays\img\fs-background.jpeg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Overlays\js\login.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Overlays\login.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

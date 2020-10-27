@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace CRP.IdentityManager.Shared.Definitions
+namespace Coronaverse.IdentityManager.Shared.Definitions
 {
 	public struct PedSkin
 	{
@@ -19,4 +19,6 @@ namespace CRP.IdentityManager.Shared.Definitions
 			{ (int)PedSkin.Model.FemaleDefault, "mp_f_freemode_01" }
 		};
 	}
+
+
 }

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using CRP.IdentityManager.Server.Tables;
-using CRP.IdentityManager.Shared;
+using Coronaverse.IdentityManager.Server.Tables;
+using Coronaverse.IdentityManager.Shared;
 
-namespace CRP.IdentityManager.Server
+namespace Coronaverse.IdentityManager.Server
 {
 	public static class MapTo
 	{

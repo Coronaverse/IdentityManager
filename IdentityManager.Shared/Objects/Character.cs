@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CRP.IdentityManager.Shared
+namespace Coronaverse.IdentityManager.Shared
 {
 	public class Character
 	{
-		public int CharacterId { get; set; }
+		public Guid CharacterId { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string DateOfBirth { get; set; }

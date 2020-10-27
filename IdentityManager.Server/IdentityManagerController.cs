@@ -2,15 +2,16 @@ using JetBrains.Annotations;
 using NFive.SDK.Core.Diagnostics;
 using NFive.SDK.Server.Communications;
 using NFive.SDK.Server.Controllers;
-using CRP.IdentityManager.Shared;
-using CRP.IdentityManager.Server.Storage;
-using CRP.IdentityManager.Server.Tables;
+using Coronaverse.IdentityManager.Shared;
+using Coronaverse.IdentityManager.Server.Storage;
+using Coronaverse.IdentityManager.Server.Tables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using NFive.SDK.Core.Models.Player;
+using NFive.SDK.Core.Helpers;
 
-namespace CRP.IdentityManager.Server
+namespace Coronaverse.IdentityManager.Server
 {
 	[PublicAPI]
 	public class IdentityManagerController : Controller
@@ -24,17 +25,19 @@ namespace CRP.IdentityManager.Server
 
 			comms.Event(IdentityManagerEvents.IdentityCreateCharacter).FromClients().OnRequest<Character>((e, CharData) =>
 			{
-				e.Reply(CreateCharacter(CharData));
+				e.Reply(CreateCharacter(e.User, CharData));
 			});
 		}
 
-		public Character CreateCharacter(Character data)
+		public Character CreateCharacter(User user, Character data)
 		{
 			using (var context = new StorageContext())
 			{
 				try
 				{
 					CharacterTable newChar = new CharacterTable();
+					newChar.CharacterId = GuidGenerator.GenerateTimeBasedGuid();
+					newChar.UserId = user.Id;
 					newChar.FirstName = data.FirstName;
 					newChar.LastName = data.LastName;
 					newChar.DateOfBirth = data.DateOfBirth;
@@ -45,7 +48,7 @@ namespace CRP.IdentityManager.Server
 				}
 				catch (Exception ex)
 				{
-					this.Logger.Debug($"Character creation failed: {ex.Message}");
+					this.Logger.Debug($"Character creation failed: {ex}");
 				}
 			}
 			return null;

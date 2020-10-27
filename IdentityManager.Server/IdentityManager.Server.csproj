@@ -7,8 +7,8 @@
     <ProjectGuid>{2042AAD2-3399-48C8-9AD8-92F93AE58521}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CRP.IdentityManager.Server</RootNamespace>
-    <AssemblyName>CRP.IdentityManager.Server.net</AssemblyName>
+    <RootNamespace>Coronaverse.IdentityManager.Server</RootNamespace>
+    <AssemblyName>Coronaverse.IdentityManager.Server.net</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AllowedReferenceRelatedFileExtensions>

@@ -8,64 +8,80 @@ using NFive.SDK.Client.Interface;
 using NFive.SDK.Client.Services;
 using NFive.SDK.Core.Diagnostics;
 using NFive.SDK.Core.Models.Player;
-using CRP.IdentityManager.Shared;
+using Coronaverse.IdentityManager.Shared;
 using NFive.SDK.Core.Utilities;
 using CitizenFX.Core;
 using System.Collections.Generic;
 using CitizenFX.Core.UI;
 using NFive.SDK.Client.Extensions;
 using CitizenFX.Core.Native;
-using CRP.IdentityManager.Client.Overlays;
-using Coronaverse.Notifications.Shared;
+using Coronaverse.IdentityManager.Client.Overlays;
+using Coronaverse.IdentityManager.Shared.Definitions;
 
-namespace CRP.IdentityManager.Client
+namespace Coronaverse.IdentityManager.Client
 {
 	[PublicAPI]
 	public class IdentityManagerService : Service
 	{
 		private IdentityManagerOverlay overlay;
 		private List<Character> Characters;
-		private Character LoggedInCharacter;
+		private Character LoggedInCharacter = null;
 
 		public IdentityManagerService(ILogger logger, ITickManager ticks, ICommunicationManager comms, ICommandManager commands, IOverlayManager overlay, User user) : base(logger, ticks, comms, commands, overlay, user)
 		{
-			this.overlay = new IdentityManagerOverlay(overlay);
+			
 		}
 
 		public override async Task HoldFocus()
 		{
-			// Grab User Characters
-			this.Characters = await this.Comms.Event(IdentityManagerEvents.IdentityGetCharacters).ToServer().Request<List<Character>>();
-
-			this.overlay.SendCharacters(this.Characters);
-
+			// Hide HUD
 			Screen.Hud.IsVisible = false;
 
+			// Disable the loading screen from automatically being dismissed
+			// No longer works, requires "loadscreen_manual_shutdown 'yes'" in __resource.lua:
+			// https://github.com/citizenfx/fivem/blob/7208a2a63fe5da65ce5ea785032d148ae9354ac1/code/components/loading-screens-five/src/LoadingScreens.cpp#L146
+			//API.SetManualShutdownLoadingScreenNui(true);
+
+			// Position character, required for switching
 			Game.Player.Character.Position = Vector3.Zero;
 
+			// Freeze player
 			Game.Player.Freeze();
 
-			if (!API.IsPlayerSwitchInProgress())
-			{
-				API.SwitchOutPlayer(Game.PlayerPed.Handle, 0, 1);
-			}
+			// Switch out the player if it isn't already in a switch state
+			if (!API.IsPlayerSwitchInProgress()) API.SwitchOutPlayer(API.PlayerPedId(), 0, 1);
 
-			API.SetCloudHatOpacity(0.01f);
+			// Remove most clouds
+			//API.SetCloudHatOpacity(0.01f);
 
-			while (API.GetPlayerSwitchState() != 5)
-				await Delay(10);
+			// Wait for switch
+			while (API.GetPlayerSwitchState() != 5) await Delay(10);
 
+			// Hide loading screen
 			API.ShutdownLoadingScreen();
 
+			// Fade out
 			Screen.Fading.FadeOut(0);
-			while (Screen.Fading.IsFadedOut)
-			{
-				await Delay(10);
-			}
+			while (Screen.Fading.IsFadingOut) await Delay(10);
 
-			this.overlay.CharacterCreate += OnCharacterCreate;
-			this.overlay.CharacterLogin += OnCharacterLogin;
+			// Create overlay
+			var overlay = new IdentityManagerOverlay(this.OverlayManager);
+			overlay.CharacterCreate += OnCharacterCreate;
+			overlay.CharacterLogin += OnCharacterLogin;
+			this.Characters = await this.Comms.Event(IdentityManagerEvents.IdentityGetCharacters).ToServer().Request<List<Character>>();
+			overlay.SendCharacters(this.Characters);
+
+			// Focus overlay
+			this.OverlayManager.Focus(true, true);
+
+			// Shut down the NUI loading screen
+			API.ShutdownLoadingScreenNui();
+
+			// Fade in
+			Screen.Fading.FadeIn(500);
+			while (this.LoggedInCharacter == null) await Delay(100);
 		}
+
 
 		private async void OnCharacterCreate(object sender, CharacterCreationEventArgs character)
 		{
@@ -78,21 +94,24 @@ namespace CRP.IdentityManager.Client
 			});
 			if (newCharacter == null)
 			{
-				this.Comms.Event(NotificationsEvents.Notification).ToClient().Emit(new Coronaverse.Notifications.Shared.Notification()
-				{
-					Icon = "exclamation-triangle",
-					Title = "Character Creation Failed",
-					Message = "Please try again at a later time to create your character, or contact an admin if you continue to have issues",
-					Variant = Variant.Warning
-				});
+				
+			} else
+			{
+				this.LoggedInCharacter = newCharacter;
+				this.OnPlay();
+				this.OverlayManager.Focus(false, false);
+				character.Overlay.Dispose();
 			}
 		}
 
 		private async void OnCharacterLogin(object sender, CharacterLoginEventArgs character)
 		{
-			this.LoggedInCharacter = this.Characters.Find(c => c.CharacterId == character.CharacterID);
-			this.Comms.Event(IdentityManagerEvents.CharacterLogin).ToClient().Emit(this.LoggedInCharacter);
-			this.overlay.Dispose();
+			Debug.WriteLine($"Logging in character: {character.Character.CharacterId}");
+			this.LoggedInCharacter = this.Characters.Find(c => c.CharacterId == character.Character.CharacterId);
+			this.OnPlay();
+			this.OverlayManager.Focus(false, false);
+			character.Overlay.Dispose();
+
 		}
 
 		public override async Task Started()
@@ -102,6 +121,25 @@ namespace CRP.IdentityManager.Client
 			{
 				e.Reply(this.LoggedInCharacter);
 			});
+		}
+
+		private async void OnPlay()
+		{
+			Game.Player.Character.Position = new Vector3(0f, 0f, 71f);
+
+			Model model = this.LoggedInCharacter.Gender == "male" ? new Model(PedHash.FreemodeMale01) : new Model(PedHash.FreemodeFemale01);
+			while (!await Game.Player.ChangeModel(model)) await Delay(10);
+			Game.Player.Character.Style.SetDefaultClothes();
+
+			Game.Player.Unfreeze();
+
+			Screen.Hud.IsVisible = true;
+
+			API.SwitchInPlayer(API.PlayerPedId());
+
+			//API.SetCloudHatOpacity(1f);
+
+			this.Comms.Event(IdentityManagerEvents.CharacterLogin).ToClient().Emit(this.LoggedInCharacter);
 		}
 	}
 }

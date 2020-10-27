@@ -1,4 +1,4 @@
-namespace CRP.IdentityManager.Shared
+namespace Coronaverse.IdentityManager.Shared
 {
 	public static class IdentityManagerEvents
 	{
