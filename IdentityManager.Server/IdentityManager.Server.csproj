@@ -102,10 +102,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mapper\MapTo.cs" />
+    <Compile Include="Migrations\202011050209214_Init.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IdentityManagerController.cs" />
     <Compile Include="Storage\StorageContext.cs" />
     <Compile Include="Tables\CharacterTable.cs" />
+    <Compile Include="Tables\StyleTable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

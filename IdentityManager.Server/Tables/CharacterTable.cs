@@ -1,3 +1,4 @@
+using Coronaverse.IdentityManager.Shared.Objects;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -27,5 +28,8 @@ namespace Coronaverse.IdentityManager.Server.Tables
 		[Required]
 		[StringLength(60)]
 		public string Gender { get; set; }
+
+		[Required]
+		public StyleTable Style { get; set; }
 	}
 }

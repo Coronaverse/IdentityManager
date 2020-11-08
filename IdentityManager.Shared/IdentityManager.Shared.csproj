@@ -56,6 +56,11 @@
     <Compile Include="Definitions\PedSkin.cs" />
     <Compile Include="Objects\Character.cs" />
     <Compile Include="IdentityManagerEvents.cs" />
+    <Compile Include="Objects\Component.cs" />
+    <Compile Include="Objects\ComponentType.cs" />
+    <Compile Include="Objects\Prop.cs" />
+    <Compile Include="Objects\PropType.cs" />
+    <Compile Include="Objects\Style.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

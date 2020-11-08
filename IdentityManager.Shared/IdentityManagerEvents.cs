@@ -9,9 +9,11 @@ namespace Coronaverse.IdentityManager.Shared
 		public const string CharacterCreated = "crp:identitymanager:charactercreated";
 		public const string CharacterLogin = "crp:identitymanager:identitylogin";
 		public const string CharacterGet = "crp:identitymanager:characterget";
+		public const string CharacterSync = "crp:identitymanager:charactersync"; // Trigger a manual sync of character data
 
 		// Client -> Server events
 		public const string IdentityGetCharacters = "crp:identitymanager:getcharacters";
 		public const string IdentityCreateCharacter = "crp:identitymanager:createcharacter";
+		public const string IdentityUpdateCharacter = "crp:identitymanager:updatecharacter";
 	}
 }

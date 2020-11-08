@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NFive.SDK.Core.Models.Player;
 using NFive.SDK.Core.Helpers;
+using Z.EntityFramework.Plus;
 
 namespace Coronaverse.IdentityManager.Server
 {
@@ -27,6 +28,11 @@ namespace Coronaverse.IdentityManager.Server
 			{
 				e.Reply(CreateCharacter(e.User, CharData));
 			});
+
+			comms.Event(IdentityManagerEvents.IdentityUpdateCharacter).FromClients().OnRequest<Character>((e, CharData) =>
+			{
+				this.UpdateCharacter(CharData);
+			});
 		}
 
 		public Character CreateCharacter(User user, Character data)
@@ -42,6 +48,7 @@ namespace Coronaverse.IdentityManager.Server
 					newChar.LastName = data.LastName;
 					newChar.DateOfBirth = data.DateOfBirth;
 					newChar.Gender = data.Gender;
+					newChar.Style = new StyleTable();
 					context.Characters.Add(newChar);
 					context.SaveChanges();
 					return MapTo.Character(newChar);
@@ -55,14 +62,35 @@ namespace Coronaverse.IdentityManager.Server
 
 		}
 
+		public void UpdateCharacter(Character data)
+		{
+			using (var context = new StorageContext())
+			{
+				try
+				{
+					var character = context.Characters.Include("Style").Where(e => e.CharacterId.Equals(data.CharacterId)).First();
+					character.FirstName = data.FirstName;
+					character.LastName = data.LastName;
+					character.DateOfBirth = data.DateOfBirth;
+					character.Gender = data.Gender;
+					character.Style.UpdateStyle(data.Style);
+					context.SaveChanges();
+				}
+				catch (Exception e)
+				{
+					this.Logger.Debug($"Character update failed: {e}");
+				}
+			}
+		}
+
 		public List<Character> GetCharacters(User user)
 		{
 			List<CharacterTable> Characters = new List<CharacterTable>();
 			using (var context = new StorageContext())
 			{
-				try
+				try 
 				{
-					Characters = context.Characters.Where(a => a.UserId == user.Id).ToList();
+					Characters = context.Characters.Include("Style").Where(a => a.UserId == user.Id).ToList();
 				} catch (Exception ex)
 				{
 					this.Logger.Debug($"MySQL Error: {ex.Message}");

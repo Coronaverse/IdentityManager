@@ -17,6 +17,7 @@ using NFive.SDK.Client.Extensions;
 using CitizenFX.Core.Native;
 using Coronaverse.IdentityManager.Client.Overlays;
 using Coronaverse.IdentityManager.Shared.Definitions;
+using Coronaverse.IdentityManager.Client.Extensions;
 
 namespace Coronaverse.IdentityManager.Client
 {
@@ -121,6 +122,12 @@ namespace Coronaverse.IdentityManager.Client
 			{
 				e.Reply(this.LoggedInCharacter);
 			});
+
+			this.Comms.Event(IdentityManagerEvents.CharacterSync).FromClient().OnRequest(e =>
+			{
+				this.LoggedInCharacter.Style.UpdateStyle();
+				this.Comms.Event(IdentityManagerEvents.IdentityUpdateCharacter).ToServer().Emit(this.LoggedInCharacter);
+			});
 		}
 
 		private async void OnPlay()
@@ -129,7 +136,7 @@ namespace Coronaverse.IdentityManager.Client
 
 			Model model = this.LoggedInCharacter.Gender == "male" ? new Model(PedHash.FreemodeMale01) : new Model(PedHash.FreemodeFemale01);
 			while (!await Game.Player.ChangeModel(model)) await Delay(10);
-			Game.Player.Character.Style.SetDefaultClothes();
+			this.LoggedInCharacter.Style.RenderStyle();
 
 			Game.Player.Unfreeze();
 

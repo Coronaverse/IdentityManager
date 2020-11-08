@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CitizenFX.Core;
 using Coronaverse.IdentityManager.Server.Tables;
 using Coronaverse.IdentityManager.Shared;
 
@@ -19,6 +20,7 @@ namespace Coronaverse.IdentityManager.Server
 				CharacterData.LastName = Character.LastName;
 				CharacterData.DateOfBirth = Character.DateOfBirth;
 				CharacterData.Gender = Character.Gender;
+				CharacterData.Style = Character.Style;
 
 				CharactersData.Add(CharacterData);
 			}
@@ -28,13 +30,15 @@ namespace Coronaverse.IdentityManager.Server
 
 		public static Character Character(CharacterTable data)
 		{
+			Debug.WriteLine($"Character Style: {data.Style.Id}, FaceIndex: {data.Style.Face.Index}");
 			return new Character()
 			{
 				CharacterId = data.CharacterId,
 				FirstName = data.FirstName,
 				LastName = data.LastName,
 				DateOfBirth = data.DateOfBirth,
-				Gender = data.Gender
+				Gender = data.Gender,
+				Style = data.Style
 			};
 		}
 	}
