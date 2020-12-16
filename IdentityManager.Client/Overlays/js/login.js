@@ -21,9 +21,9 @@ var app = new Vue({
     errors: [],
   },
   methods: {
-	loginCharacter(character) {
-	  console.log(`Logging in character ${character.CharacterId}`);
-      nfive.send("login", character);
+    loginCharacter(character) {
+      console.log(`Logging in character ${character.CharacterId}`);
+      nfive.send("login", character.CharacterId);
       this.showLoggingInSpinner = true;
     },
     createCharacter() {
@@ -34,7 +34,7 @@ var app = new Vue({
       this.firstName = "";
       this.lastName = "";
       this.dob = "";
-      this.gender = "";
+      this.gender = 0;
       this.errors = [];
       this.showLoginCharacters = true;
     },
@@ -42,21 +42,21 @@ var app = new Vue({
       const self = this;
       event.preventDefault();
       this.errors = [];
-
       if (this.firstName == "") {
         this.errors.push("firstName");
       }
       if (this.lastName == "") {
         this.errors.push("lastName");
       }
-      if (this.dob == "") {
+      if ([0,1].includes(this.dob)) {
         this.errors.push('dob');
       }
       if (this.gender == "") {
         this.errors.push('gender')
       }
 
-      console.log(this.errors);
+      var dateParts = this.dob.split('-');
+      var dateOfBirth = new Date(dateOfBirth[0], dateOfBirth[1], dateOfBirth[2]);
 
       if (this.errors.length > 0) {
         return;
@@ -64,14 +64,14 @@ var app = new Vue({
       nfive.send("create", {
         FirstName: this.firstName,
         LastName: this.lastName,
-        DateOfBirth: this.dob,
+        DateOfBirth: dateOfBirth.toISOString(),
         Gender: this.gender
       });
       this.showLoggingInSpinner = true;
     },
-	setCharacters(characters) {
+    setCharacters(characters) {
       console.log(`Characters set: ${characters.length}`);
-	  this.characters = characters;
+      this.characters = characters;
     },
     
     eventListener(event) {
@@ -83,6 +83,7 @@ var app = new Vue({
           this.showLoginCharacters = false;
         }
       }
+
       if (item.hasOwnProperty("login")) {
         if (item.login) {
           this.showCharacters = false;
@@ -96,7 +97,7 @@ var app = new Vue({
 });
 
 nfive.on("nfive:load", () => {
-	console.log("NFIVE LOADING ON IDENTITY");
+  console.log("NFIVE LOADING ON IDENTITY");
 })
 
 nfive.on("characters", (characters) => {

@@ -1,12 +1,16 @@
+using Coronaverse.IdentityManager.Shared.Models.Apparel;
+using NFive.SDK.Core.Helpers;
+using NFive.SDK.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Coronaverse.IdentityManager.Shared.Objects
+namespace Coronaverse.IdentityManager.Server.Models
 {
-	public class Style
+	public class Style : IdentityModel, IStyle
 	{
 		public Component Face { get; set; }
 		public Component Head { get; set; }
@@ -20,7 +24,6 @@ namespace Coronaverse.IdentityManager.Shared.Objects
 		public Component Special2 { get; set; }
 		public Component Special3 { get; set; }
 		public Component Textures { get; set; }
-
 		public Prop Hat { get; set; }
 		public Prop Glasses { get; set; }
 		public Prop EarPiece { get; set; }
@@ -31,32 +34,5 @@ namespace Coronaverse.IdentityManager.Shared.Objects
 		public Prop Wristband { get; set; }
 		public Prop Unknown8 { get; set; }
 		public Prop Unknown9 { get; set; }
-
-		public Style()
-		{
-			this.Face = new Component();
-			this.Head = new Component();
-			this.Hair = new Component();
-			this.Torso = new Component();
-			this.Torso2 = new Component();
-			this.Legs = new Component();
-			this.Hands = new Component();
-			this.Shoes = new Component();
-			this.Special1 = new Component();
-			this.Special2 = new Component();
-			this.Special3 = new Component();
-			this.Textures = new Component();
-
-			this.Hat = new Prop();
-			this.Glasses = new Prop();
-			this.EarPiece = new Prop();
-			this.Unknown3 = new Prop();
-			this.Unknown4 = new Prop();
-			this.Unknown5 = new Prop();
-			this.Watch = new Prop();
-			this.Wristband = new Prop();
-			this.Unknown8 = new Prop();
-			this.Unknown9 = new Prop();
-		}
 	}
 }

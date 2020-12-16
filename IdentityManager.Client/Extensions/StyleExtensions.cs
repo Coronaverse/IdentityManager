@@ -1,5 +1,5 @@
 using CitizenFX.Core;
-using Coronaverse.IdentityManager.Shared.Objects;
+using Coronaverse.IdentityManager.Shared.Models.Apparel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,7 +74,7 @@ namespace Coronaverse.IdentityManager.Client.Extensions
 			};
 		}
 
-		public static Shared.Objects.Prop PedPropToProp(PropType type)
+		public static Shared.Models.Apparel.Prop PedPropToProp(PropType type)
 		{
 			return new Shared.Objects.Prop()
 			{

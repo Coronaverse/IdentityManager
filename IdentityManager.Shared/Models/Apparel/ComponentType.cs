@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Coronaverse.IdentityManager.Shared.Objects
+namespace Coronaverse.IdentityManager.Shared.Models.Apparel
 {
 	public enum ComponentType
 	{

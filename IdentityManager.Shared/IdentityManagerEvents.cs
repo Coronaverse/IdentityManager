@@ -2,6 +2,7 @@ namespace Coronaverse.IdentityManager.Shared
 {
 	public static class IdentityManagerEvents
 	{
+		public const string IdentityConfiguration = "crp:identitymanager:configuration";
 		public const string Identity = "crp:identitymanager:identity";
 		public const string GetLocalIdentity = "crp:identitymanager:getLocalIdentity";
 
@@ -14,6 +15,9 @@ namespace Coronaverse.IdentityManager.Shared
 		// Client -> Server events
 		public const string IdentityGetCharacters = "crp:identitymanager:getcharacters";
 		public const string IdentityCreateCharacter = "crp:identitymanager:createcharacter";
+		public const string IdentityDeleteCharacter = "crp:identitymanager:deletecharacter";
+		public const string IdentityLoginCharacter = "crp:identitymanager:logincharacter";
 		public const string IdentityUpdateCharacter = "crp:identitymanager:updatecharacter";
+		public const string IdentitySavePosition = "crp:identitymanager:saveposition";
 	}
 }

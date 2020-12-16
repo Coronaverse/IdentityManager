@@ -32,7 +32,7 @@
                     <div class="login-character-info">
                       <span class="login-character-name">Name: {{character.FirstName}} {{character.LastName}}</span>
                       <span class="login-character-dob">Date of Birth: {{character.DateOfBirth}}</span>
-                      <span class="login-character-gender">Gender: {{character.Gender}}</span>
+                      <span class="login-character-gender">Gender: {{character.Gender == 0 ? "Male" : "Female"}}</span>
                     </div>
                     <button class="login-character-submit btn btn-secondary" v-on:click="loginCharacter(character)">Login</button>
                   </div>
@@ -64,8 +64,8 @@
               <div class="form-group">
                 <label for="gender">Gender</label>
                 <select :class="[{'is-invalid': this.errors.includes('gender')}, 'form-control']" name="gender" id="gender" v-model="gender">
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                  <option value="0">Male</option>
+                  <option value="1">Female</option>
                 </select>
                 <div class="invalid-feedback">
                   Please select a gender.

@@ -9,15 +9,15 @@ using NFive.SDK.Client.Services;
 using NFive.SDK.Core.Diagnostics;
 using NFive.SDK.Core.Models.Player;
 using Coronaverse.IdentityManager.Shared;
-using NFive.SDK.Core.Utilities;
 using CitizenFX.Core;
 using System.Collections.Generic;
 using CitizenFX.Core.UI;
 using NFive.SDK.Client.Extensions;
 using CitizenFX.Core.Native;
 using Coronaverse.IdentityManager.Client.Overlays;
-using Coronaverse.IdentityManager.Shared.Definitions;
 using Coronaverse.IdentityManager.Client.Extensions;
+using Coronaverse.IdentityManager.Client.Models;
+using NFive.SDK.Core.Extensions;
 
 namespace Coronaverse.IdentityManager.Client
 {
@@ -26,7 +26,8 @@ namespace Coronaverse.IdentityManager.Client
 	{
 		private IdentityManagerOverlay overlay;
 		private List<Character> Characters;
-		private Character LoggedInCharacter = null;
+		private CharacterSession LoggedInCharacter = null;
+		private IdentityConfiguration config;
 
 		public IdentityManagerService(ILogger logger, ITickManager ticks, ICommunicationManager comms, ICommandManager commands, IOverlayManager overlay, User user) : base(logger, ticks, comms, commands, overlay, user)
 		{
@@ -95,10 +96,11 @@ namespace Coronaverse.IdentityManager.Client
 			});
 			if (newCharacter == null)
 			{
-				
+				//TODO: Return overlay with error message
 			} else
 			{
-				this.LoggedInCharacter = newCharacter;
+
+				this.LoggedInCharacter = await this.Comms.Event(IdentityManagerEvents.IdentityLoginCharacter).ToServer().Request<CharacterSession>(newCharacter);
 				this.OnPlay();
 				this.OverlayManager.Focus(false, false);
 				character.Overlay.Dispose();
@@ -107,8 +109,7 @@ namespace Coronaverse.IdentityManager.Client
 
 		private async void OnCharacterLogin(object sender, CharacterLoginEventArgs character)
 		{
-			Debug.WriteLine($"Logging in character: {character.Character.CharacterId}");
-			this.LoggedInCharacter = this.Characters.Find(c => c.CharacterId == character.Character.CharacterId);
+			this.LoggedInCharacter = await this.Comms.Event(IdentityManagerEvents.IdentityLoginCharacter).ToServer().Request<CharacterSession>(character.CharacterId);
 			this.OnPlay();
 			this.OverlayManager.Focus(false, false);
 			character.Overlay.Dispose();
@@ -117,26 +118,20 @@ namespace Coronaverse.IdentityManager.Client
 
 		public override async Task Started()
 		{
+			this.config = await this.Comms.Event(IdentityManagerEvents.IdentityConfiguration).ToServer().Request<IdentityConfiguration>();
+
 			// Create events
 			this.Comms.Event(IdentityManagerEvents.CharacterGet).FromClient().OnRequest(e =>
 			{
 				e.Reply(this.LoggedInCharacter);
 			});
-
-			this.Comms.Event(IdentityManagerEvents.CharacterSync).FromClient().OnRequest(e =>
-			{
-				this.LoggedInCharacter.Style.UpdateStyle();
-				this.Comms.Event(IdentityManagerEvents.IdentityUpdateCharacter).ToServer().Emit(this.LoggedInCharacter);
-			});
 		}
 
 		private async void OnPlay()
 		{
-			Game.Player.Character.Position = new Vector3(0f, 0f, 71f);
+			Game.Player.Character.Position = this.LoggedInCharacter.Character.Position.ToVector3().ToCitVector3();
 
-			Model model = this.LoggedInCharacter.Gender == "male" ? new Model(PedHash.FreemodeMale01) : new Model(PedHash.FreemodeFemale01);
-			while (!await Game.Player.ChangeModel(model)) await Delay(10);
-			this.LoggedInCharacter.Style.RenderStyle();
+			await this.LoggedInCharacter.Character.Render(this.Logger);
 
 			Game.Player.Unfreeze();
 
@@ -147,6 +142,22 @@ namespace Coronaverse.IdentityManager.Client
 			//API.SetCloudHatOpacity(1f);
 
 			this.Comms.Event(IdentityManagerEvents.CharacterLogin).ToClient().Emit(this.LoggedInCharacter);
+			this.Ticks.On(OnSavePosition);
+		}
+
+		public async Task OnSavePosition()
+		{
+			SavePosition();
+
+			await Delay(this.config.Autosave.PositionInterval);
+		}
+
+		private void SavePosition()
+		{
+			if (this.LoggedInCharacter == null)
+				return;
+
+			this.Comms.Event(IdentityManagerEvents.IdentitySavePosition).ToServer().Emit(this.LoggedInCharacter.CharacterId, Game.Player.Character.Position.ToVector3().ToPosition());
 		}
 	}
 }

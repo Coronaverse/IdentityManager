@@ -54,13 +54,22 @@
   <ItemGroup>
     <Compile Include="Definitions\PedComponent.cs" />
     <Compile Include="Definitions\PedSkin.cs" />
-    <Compile Include="Objects\Character.cs" />
+    <Compile Include="Events\CreateCharacterEvent.cs" />
+    <Compile Include="IdentityConfiguration.cs" />
+    <Compile Include="Models\Appearance\Feature.cs" />
+    <Compile Include="Models\Appearance\FeatureColorTypes.cs" />
+    <Compile Include="Models\Appearance\FeatureTypes.cs" />
+    <Compile Include="Models\IAppearance.cs" />
+    <Compile Include="Models\ICharacterSession.cs" />
+    <Compile Include="Models\ICharacter.cs" />
     <Compile Include="IdentityManagerEvents.cs" />
-    <Compile Include="Objects\Component.cs" />
-    <Compile Include="Objects\ComponentType.cs" />
-    <Compile Include="Objects\Prop.cs" />
-    <Compile Include="Objects\PropType.cs" />
-    <Compile Include="Objects\Style.cs" />
+    <Compile Include="Models\Apparel\Component.cs" />
+    <Compile Include="Models\Apparel\ComponentType.cs" />
+    <Compile Include="Models\Apparel\Prop.cs" />
+    <Compile Include="Models\Apparel\PropType.cs" />
+    <Compile Include="Models\IFaceShape.cs" />
+    <Compile Include="Models\IHeritage.cs" />
+    <Compile Include="Models\IStyle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

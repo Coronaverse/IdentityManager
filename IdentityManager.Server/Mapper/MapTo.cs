@@ -7,11 +7,11 @@ namespace Coronaverse.IdentityManager.Server
 {
 	public static class MapTo
 	{
-		public static List<Shared.Character> CharacterData(List<CharacterTable> Characters)
+		public static List<Shared.Character> CharacterData(List<Character> Characters)
 		{
 			List<Shared.Character> CharactersData = new List<Shared.Character>();
 
-			foreach (CharacterTable Character in Characters)
+			foreach (Character Character in Characters)
 			{
 				Shared.Character CharacterData = new Shared.Character();
 
@@ -28,7 +28,7 @@ namespace Coronaverse.IdentityManager.Server
 			return CharactersData;
 		}
 
-		public static Character Character(CharacterTable data)
+		public static Character Character(Character data)
 		{
 			Debug.WriteLine($"Character Style: {data.Style.Id}, FaceIndex: {data.Style.Face.Index}");
 			return new Character()
