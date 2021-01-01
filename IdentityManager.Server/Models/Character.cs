@@ -1,6 +1,5 @@
 using Coronaverse.IdentityManager.Server.Storage;
 using Coronaverse.IdentityManager.Shared;
-using Coronaverse.IdentityManager.Shared.Objects;
 using Newtonsoft.Json;
 using NFive.SDK.Core.Models;
 using System;
@@ -8,7 +7,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 using System.Linq;
-using Coronaverse.IdentityManager.Server.Models;
 using NFive.SDK.Core.Models.Player;
 
 namespace Coronaverse.IdentityManager.Server.Models

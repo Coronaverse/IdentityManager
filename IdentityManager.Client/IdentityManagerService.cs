@@ -15,7 +15,6 @@ using CitizenFX.Core.UI;
 using NFive.SDK.Client.Extensions;
 using CitizenFX.Core.Native;
 using Coronaverse.IdentityManager.Client.Overlays;
-using Coronaverse.IdentityManager.Client.Extensions;
 using Coronaverse.IdentityManager.Client.Models;
 using NFive.SDK.Core.Extensions;
 

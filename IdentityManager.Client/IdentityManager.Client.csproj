@@ -62,7 +62,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\StyleExtensions.cs" />
     <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\Character.cs" />
     <Compile Include="Models\CharacterSession.cs" />

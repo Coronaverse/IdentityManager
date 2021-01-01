@@ -1,3 +1,4 @@
+using Coronaverse.IdentityManager.Shared.Models;
 using Coronaverse.IdentityManager.Shared.Models.Apparel;
 using NFive.SDK.Core.Helpers;
 using NFive.SDK.Core.Models;
