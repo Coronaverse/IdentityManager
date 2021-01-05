@@ -87,6 +87,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
     <Reference Include="Z.EntityFramework.Extensions, Version=4.0.12.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
       <HintPath>..\packages\Z.EntityFramework.Extensions.4.0.12\lib\net45\Z.EntityFramework.Extensions.dll</HintPath>
       <Private>False</Private>
@@ -101,7 +102,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Migrations\202011050209214_Init.cs" />
+    <Compile Include="Events\CreateCharacterEvent.cs" />
+    <Compile Include="Migrations\202101050223340_InitIdentity.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\FaceShape.cs" />
     <Compile Include="Models\Heritage.cs" />

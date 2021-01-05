@@ -17,6 +17,8 @@ using CitizenFX.Core.Native;
 using Coronaverse.IdentityManager.Client.Overlays;
 using Coronaverse.IdentityManager.Client.Models;
 using NFive.SDK.Core.Extensions;
+using Coronaverse.IdentityManager.Shared.Events;
+using Coronaverse.IdentityManager.Client.Events;
 
 namespace Coronaverse.IdentityManager.Client
 {
@@ -25,7 +27,7 @@ namespace Coronaverse.IdentityManager.Client
 	{
 		private IdentityManagerOverlay overlay;
 		private List<Character> Characters;
-		private CharacterSession LoggedInCharacter = null;
+		private CharacterSession CurrentSession = null;
 		private IdentityConfiguration config;
 
 		public IdentityManagerService(ILogger logger, ITickManager ticks, ICommunicationManager comms, ICommandManager commands, IOverlayManager overlay, User user) : base(logger, ticks, comms, commands, overlay, user)
@@ -80,26 +82,31 @@ namespace Coronaverse.IdentityManager.Client
 
 			// Fade in
 			Screen.Fading.FadeIn(500);
-			while (this.LoggedInCharacter == null) await Delay(100);
+			while (this.CurrentSession == null) await Delay(100);
 		}
 
 
 		private async void OnCharacterCreate(object sender, CharacterCreationEventArgs character)
 		{
-			Character newCharacter = await this.Comms.Event(IdentityManagerEvents.IdentityCreateCharacter).ToServer().Request<Character>(new Character()
+			CreateCharacterEvent newCharacter = await this.Comms.Event(IdentityManagerEvents.IdentityCreateCharacter).ToServer().Request<CreateCharacterEvent>(new Character()
 			{
 				FirstName = character.FirstName,
+				MiddleName = "MiddleName",
 				LastName = character.LastName,
 				DateOfBirth = character.DateOfBirth,
-				Gender = character.Gender
-			});
-			if (newCharacter == null)
+				Gender = character.Gender,
+				WalkingStyle = null,
+				Model = ((uint)(character.Gender == 0 ? PedHash.FreemodeMale01 : PedHash.FreemodeFemale01)).ToString()
+		});
+			if (newCharacter.Status != CreateCharacterStatus.GOOD)
 			{
 				//TODO: Return overlay with error message
 			} else
 			{
 
-				this.LoggedInCharacter = await this.Comms.Event(IdentityManagerEvents.IdentityLoginCharacter).ToServer().Request<CharacterSession>(newCharacter);
+				this.CurrentSession = await this.Comms.Event(IdentityManagerEvents.IdentityLoginCharacter).ToServer().Request<CharacterSession>(newCharacter.Character.Id);
+				this.Characters = await this.Comms.Event(IdentityManagerEvents.IdentityGetCharacters).ToServer().Request<List<Character>>();
+				this.CurrentSession.Character = this.Characters.Find(c => this.CurrentSession.CharacterId == c.Id);
 				this.OnPlay();
 				this.OverlayManager.Focus(false, false);
 				character.Overlay.Dispose();
@@ -108,7 +115,8 @@ namespace Coronaverse.IdentityManager.Client
 
 		private async void OnCharacterLogin(object sender, CharacterLoginEventArgs character)
 		{
-			this.LoggedInCharacter = await this.Comms.Event(IdentityManagerEvents.IdentityLoginCharacter).ToServer().Request<CharacterSession>(character.CharacterId);
+			this.CurrentSession = await this.Comms.Event(IdentityManagerEvents.IdentityLoginCharacter).ToServer().Request<CharacterSession>(character.CharacterId);
+			this.CurrentSession.Character = this.Characters.Find(c => this.CurrentSession.CharacterId == c.Id);
 			this.OnPlay();
 			this.OverlayManager.Focus(false, false);
 			character.Overlay.Dispose();
@@ -122,15 +130,15 @@ namespace Coronaverse.IdentityManager.Client
 			// Create events
 			this.Comms.Event(IdentityManagerEvents.CharacterGet).FromClient().OnRequest(e =>
 			{
-				e.Reply(this.LoggedInCharacter);
+				e.Reply(this.CurrentSession.Character);
 			});
 		}
 
 		private async void OnPlay()
 		{
-			Game.Player.Character.Position = this.LoggedInCharacter.Character.Position.ToVector3().ToCitVector3();
+			Game.Player.Character.Position = this.CurrentSession.Character.Position.ToVector3().ToCitVector3();
 
-			await this.LoggedInCharacter.Character.Render(this.Logger);
+			await this.CurrentSession.Character.Render(this.Logger);
 
 			Game.Player.Unfreeze();
 
@@ -140,7 +148,7 @@ namespace Coronaverse.IdentityManager.Client
 
 			//API.SetCloudHatOpacity(1f);
 
-			this.Comms.Event(IdentityManagerEvents.CharacterLogin).ToClient().Emit(this.LoggedInCharacter);
+			this.Comms.Event(IdentityManagerEvents.CharacterLogin).ToClient().Emit(this.CurrentSession);
 			this.Ticks.On(OnSavePosition);
 		}
 
@@ -153,10 +161,10 @@ namespace Coronaverse.IdentityManager.Client
 
 		private void SavePosition()
 		{
-			if (this.LoggedInCharacter == null)
+			if (this.CurrentSession == null)
 				return;
 
-			this.Comms.Event(IdentityManagerEvents.IdentitySavePosition).ToServer().Emit(this.LoggedInCharacter.CharacterId, Game.Player.Character.Position.ToVector3().ToPosition());
+			this.Comms.Event(IdentityManagerEvents.IdentitySavePosition).ToServer().Emit(this.CurrentSession.CharacterId, Game.Player.Character.Position.ToVector3().ToPosition());
 		}
 	}
 }

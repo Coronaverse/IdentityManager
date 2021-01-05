@@ -22,8 +22,8 @@ var app = new Vue({
   },
   methods: {
     loginCharacter(character) {
-      console.log(`Logging in character ${character.CharacterId}`);
-      nfive.send("login", character.CharacterId);
+      console.log(`Logging in character ${character.Id}`);
+      nfive.send("login", character.Id);
       this.showLoggingInSpinner = true;
     },
     createCharacter() {
@@ -56,7 +56,7 @@ var app = new Vue({
       }
 
       var dateParts = this.dob.split('-');
-      var dateOfBirth = new Date(dateOfBirth[0], dateOfBirth[1], dateOfBirth[2]);
+      var dateOfBirth = new Date(dateParts[0], dateParts[1], dateParts[2]);
 
       if (this.errors.length > 0) {
         return;

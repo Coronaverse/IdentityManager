@@ -35,5 +35,34 @@ namespace Coronaverse.IdentityManager.Server.Models
 		public Prop Wristband { get; set; }
 		public Prop Unknown8 { get; set; }
 		public Prop Unknown9 { get; set; }
+
+		public Style()
+        {
+			this.Id = GuidGenerator.GenerateTimeBasedGuid();
+
+			this.Face = new Component();
+			this.Head = new Component();
+			this.Hair = new Component();
+			this.Torso = new Component();
+			this.Torso2 = new Component();
+			this.Legs = new Component();
+			this.Hands = new Component();
+			this.Shoes = new Component();
+			this.Special1 = new Component();
+			this.Special2 = new Component();
+			this.Special3 = new Component();
+			this.Textures = new Component();
+
+			this.Hat = new Prop();
+			this.Glasses = new Prop();
+			this.EarPiece = new Prop();
+			this.Unknown3 = new Prop();
+			this.Unknown4 = new Prop();
+			this.Unknown5 = new Prop();
+			this.Watch = new Prop();
+			this.Wristband = new Prop();
+			this.Unknown8 = new Prop();
+			this.Unknown9 = new Prop();
+		}
 	}
 }

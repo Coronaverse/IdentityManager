@@ -18,6 +18,9 @@ using System.Threading.Tasks;
 using System;
 using Z.EntityFramework.Plus;
 using NFive.SDK.Core.Models.Player;
+using System.Data.Entity.Validation;
+using NFive.SDK.Core.Utilities;
+using Coronaverse.IdentityManager.Server.Events;
 
 namespace Coronaverse.IdentityManager.Server
 {
@@ -116,7 +119,22 @@ namespace Coronaverse.IdentityManager.Server
 						Status = CreateCharacterStatus.GOOD,
 						Character = character
 					});
-				} catch (Exception ex)
+				}
+				catch (DbEntityValidationException ex)
+				{
+					foreach (var eve in ex.EntityValidationErrors)
+					{
+						Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+							eve.Entry.Entity.GetType().Name, eve.Entry.State);
+						foreach (var ve in eve.ValidationErrors)
+						{
+							Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+								ve.PropertyName, ve.ErrorMessage);
+						}
+					}
+					throw;
+				}
+				catch (Exception ex)
 				{
 					this.Logger.Error(ex);
 					transaction.Rollback();
@@ -133,7 +151,7 @@ namespace Coronaverse.IdentityManager.Server
 		{
 			using (var context = new StorageContext())
 			{
-				var character = context.Characters.First(c => c.UserId == e.User.Id && c.CharacterId == id);
+				var character = context.Characters.First(c => c.UserId == e.User.Id && c.Id == id);
 
 				character.Deleted = DateTime.UtcNow;
 
@@ -197,6 +215,9 @@ namespace Coronaverse.IdentityManager.Server
 
 				await context.SaveChangesAsync();
 				transaction.Commit();
+
+				this.Logger.Debug("Created character session");
+				this.Logger.Debug($"Session: {new Serializer().Serialize(e.Session)}");
 
 				newSession.Session = e.Session;
 

@@ -54,7 +54,7 @@
   <ItemGroup>
     <Compile Include="Definitions\PedComponent.cs" />
     <Compile Include="Definitions\PedSkin.cs" />
-    <Compile Include="Events\CreateCharacterEvent.cs" />
+    <Compile Include="Events\ICreateCharacterEvent.cs" />
     <Compile Include="IdentityConfiguration.cs" />
     <Compile Include="Models\Appearance\Feature.cs" />
     <Compile Include="Models\Appearance\FeatureColorTypes.cs" />

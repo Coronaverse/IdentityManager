@@ -106,9 +106,13 @@ namespace Coronaverse.IdentityManager.Client.Models
 			Game.Player.Character.Position = this.Position.ToVector3().ToCitVector3();
 			Game.Player.Character.Armor = this.Armor;
 
-			API.RequestClipSet(this.WalkingStyle);
+			if (this.WalkingStyle != null)
+            {
+				API.RequestClipSet(this.WalkingStyle);
+            }
+			
 			await BaseScript.Delay(100); // Required to load
-			Game.Player.Character.MovementAnimationSet = this.WalkingStyle;
+			Game.Player.Character.MovementAnimationSet = this.WalkingStyle == "" ? null : this.WalkingStyle;
 
 			Game.Player.Character.Style[PedComponents.Face].SetVariation(this.Style.Face.Index, this.Style.Face.Texture);
 			Game.Player.Character.Style[PedComponents.Head].SetVariation(this.Style.Head.Index, this.Style.Head.Texture);

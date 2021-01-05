@@ -11,9 +11,8 @@ namespace Coronaverse.IdentityManager.Shared.Events
 		GOOD = 0,
 		ERROR = 1
 	}
-	public class CreateCharacterEvent
+	public interface ICreateCharacterEvent
 	{
-		public CreateCharacterStatus Status { get; set; }
-		public ICharacter Character { get; set; }
+		CreateCharacterStatus Status { get; set; }
 	}
 }

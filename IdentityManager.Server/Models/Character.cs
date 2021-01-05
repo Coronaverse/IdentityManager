@@ -20,9 +20,6 @@ namespace Coronaverse.IdentityManager.Server.Models
 
 		public virtual User User { get; set; }
 
-		[Key]
-		public Guid CharacterId { get; set; }
-
 		[Required]
 		[StringLength(100, MinimumLength = 2)]
 		public string FirstName { get; set; }
@@ -60,7 +57,6 @@ namespace Coronaverse.IdentityManager.Server.Models
 		[Required]
 		public Position Position { get; set; }
 
-		[Required]
 		[StringLength(200)]
 		public string WalkingStyle { get; set; }
 

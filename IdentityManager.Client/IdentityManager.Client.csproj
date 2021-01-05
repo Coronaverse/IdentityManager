@@ -62,6 +62,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\CreateCharacterEvent.cs" />
     <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\Character.cs" />
     <Compile Include="Models\CharacterSession.cs" />
